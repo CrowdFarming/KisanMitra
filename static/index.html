@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <style>
         body {
-            padding-top: 50px;
+            padding-top: 10px;
             padding-bottom: 20px;
         }
     </style>
@@ -51,7 +51,7 @@
                     <li><a href="#" onclick="showPage('projects')">Projects</a></li>
                     <li><a href="#" onclick="showPage('farmers')">Farmers</a></li>
                     <li><a href="#" onclick="showPage('about')">About</a></li>
-					<li><a href="#" onclick="showPage('map')">Map</a></li>
+			
                 </ul>
 
                 <form class="navbar-form navbar-right" role="form" id="login_form">
@@ -138,6 +138,11 @@
     <!-- PROJECTS PAGE -->
     <div id="page-projects" style="display:none">
         <div class="container">
+            <div class="row text-right">
+                <div class="col-md-offset-9 col-md-3">
+                <button  type="button" class="btn btn-primary " style="margin-bottom:10px;" onclick="showPage('map')">Map view</button>
+                </div>
+            </div>
             <!-- Filters needs to be placed here -->
             <div class="row" id="list-project">
             </div>
@@ -185,9 +190,14 @@
             </div>
         </div>
     </div>
-    <!-- Payment PAGE -->    
+    <!-- MAP PAGE -->    
 	<div id="page-map" style="display: none;">
 		<div class="container">
+            <div class="row text-right">
+                <div class="col-md-offset-9 col-md-3">
+                    <button  type="button" class="btn btn-primary " style="margin-bottom:10px;" onclick="showPage('projects')">List view</button>
+                </div>
+            </div>
 			<div class="row">
 				<div class="col-md-10 col-md-offset-1" id="div-map" style="height: 600px;">
 				</div>
@@ -245,7 +255,7 @@
                         </div>
                         <div class="content">
                             <div class="main">
-                                <h4 class="text-center">Need for fund</h4>
+                                <h4 class="text-center">Need fund for</h4>
                                 <p class="text-center">{{need_for_fund}} <br/>Total : Rs.{{target_fund}}
                                 </p>
                                 <div class="progress" style="max-height: 10px">
