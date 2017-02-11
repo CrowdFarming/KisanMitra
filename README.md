@@ -1,5 +1,5 @@
 # alpha
-Crowd funding for Farmers practising Natural-farming methods
+Crowd funding for Farmers practising Natural farming methods
 
 ## Objective
 * Crowd fund farmers to save them from huge debts.
