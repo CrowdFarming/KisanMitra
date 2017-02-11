@@ -14,7 +14,7 @@ function showPage(pagename, arg) {
 
     if (pagename == 'projects') {
         setupProjects();
-	$('div[id|="page"]').hide();
+        $('div[id|="page"]').hide();
         $('#page-' + pagename).show();
         //pageBackHistory.push(currpage);
         currpage = pagename;
@@ -26,8 +26,7 @@ function showPage(pagename, arg) {
         setupFarmers();
     } else if (pagename == 'map') {
         loadMap();
-    }
-    else if (pagename != '') {
+    } else if (pagename != '') {
         $('div[id|="page"]').hide();
         $('#page-' + pagename).show();
         //pageBackHistory.push(currpage);
@@ -130,8 +129,8 @@ function calcTotal(change) {
         currValue = 1;
     }
     $("#buy_units").val(currValue);
-    totalvalue  = currValue * parseInt(projectsList[currentIndex]['quantity']) * parseInt(projectsList[currentIndex]['price']);
-    $("#total_value").html("<i class=\"fa fa-inr aria-hidden='true'\"></i>"+totalvalue);
+    totalvalue = currValue * parseInt(projectsList[currentIndex]['quantity']) * parseInt(projectsList[currentIndex]['price']);
+    $("#total_value").html("<i class=\"fa fa-inr aria-hidden='true'\"></i>" + totalvalue);
 }
 /* Payment confirmation */
 function contribute() {
@@ -182,10 +181,11 @@ function logout() {
     document.cookie = "cke=;";
     setTimeout(function() {
         location.reload();
-        window.location.href=window.location.href;
-        location.href=location.href;
+        window.location.href = window.location.href;
+        location.href = location.href;
     }, 400);
 }
+
 /* Show snackbar */
 function showMessage(message, bgcolor) {
     // Get the snackbar DIV
@@ -195,7 +195,6 @@ function showMessage(message, bgcolor) {
     $(x).html(message);
     $(x).css("background-color", bgcolor);
     x.className = "show";
-
 
     // After 3 seconds, remove the show class from DIV
     setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
@@ -224,34 +223,6 @@ function setupProjects() {
         data.data[i]['position_index'] = i;
         $("#list-project").append(template(data.data[i]));
     }
-    /*
-    var req_data = {};
-    $.get("projects", function(data, status) {
-        //TODO: Remove this log
-        console.log(data);
-        if (typeof data == 'string') {
-            data = JSON.parse(data);
-        }
-        // TODO: Handle errors gracefully
-        if (!data.success) {
-            console.log(data.message);
-            return;
-        }
-        var proj_len, i;
-        $("#list-project").empty();
-
-        projectsList = data.data;
-        for (proj_len = data.data.length, i = 0; i < proj_len; ++i) {
-            data.data[i]['fund_progress'] = (data.data[i]['amount'] * 100) / data.data[i]['target_fund'];
-            data.data[i]['position_index'] = i;
-            $("#list-project").append(template(data.data[i]));
-        }
-        $('div[id|="page"]').hide();
-        $('#page-projects').show();
-        //pageBackHistory.push(currpage);
-        currpage = 'projects';
-    });
-    */
 }
 
 function getProjects() {
@@ -292,7 +263,7 @@ function setupFarmer(arg) {
         }
         var proj_len, i;
         $("#list-farmer").empty();
-        data.data[0]['bgnumber'] = parseInt(data.data[0]['farmer_uid'], 10)%10 + 1;
+        data.data[0]['bgnumber'] = parseInt(data.data[0]['farmer_uid'], 10) % 10 + 1;
 
         $("#list-farmer").append('<div class="row">' + farmertemp(data.data[0]) +
             '<div class="col-md-9">' + '<h2>About me</h2><p>' +
@@ -321,7 +292,6 @@ function setupFarmer(arg) {
         $('#page-farmer').show();
         //pageBackHistory.push(currpage);
         currpage = 'farmer';
-
     });
 }
 
@@ -344,7 +314,7 @@ function setupFarmers() {
         $("#list-farmers").empty();
 
         for (proj_len = data.data.length, i = 0; i < proj_len; ++i) {
-            data.data[i]['bgnumber'] = parseInt(data.data[i]['farmer_uid'], 10)%10 + 1;
+            data.data[i]['bgnumber'] = parseInt(data.data[i]['farmer_uid'], 10) % 10 + 1;
             $("#list-farmers").append(farmertemp(data.data[i]));
         }
         $('div[id|="page"]').hide();
