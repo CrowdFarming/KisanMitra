@@ -71,7 +71,7 @@ function loadMap() {
         var latLong = new google.maps.LatLng(projectsList[i].latitude, projectsList[i].longitude);
         bounds.extend(latLong);
 
-        contentString[i] = '<br /><p style="font-weight:bold">' + projectsList[i].crop + "</p><img style='max-width: 90px; max-height: 90px;' src='img/products/" + projectsList[i].type + "/" + projectsList[i].crop + ".jpg'><br />" + '<a href="#" onclick="showPage(\'payment\',' + i + ')">Fund</a>';
+        contentString[i] = '<br /><p style="font-weight:bold">' + projectsList[i].crop + "</p><img style='max-width: 90px; max-height: 90px;' src='img/products/" + projectsList[i].type + "/" + projectsList[i].crop + ".jpg'><br />" + '<br /><a href="#" onclick="showPage(\'payment\',' + i + ')"><span style="font-weight:bold;" class="text-center"> Fund</a>';
         infoWindows[i] = new google.maps.InfoWindow({
             content: contentString[i]
         });
