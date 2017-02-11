@@ -358,12 +358,14 @@ function setupDashboard(arg) {
                 if (data[i].project_id == projectsList[j].project_uid) {
                     if ('Completed' != projectsList[j].current_stage) {
                         templateInput[inputIndex] = projectsList[j];
+                        templateInput[inputIndex]['fund_progress'] = (projectsList[j]['amount'] * 100) / projectsList[j]['target_fund'];
                         templateInput[inputIndex]["contributed_amount"] = data[i].spent;
                         templateInput[inputIndex]["crop_quantity"] = data[i].spent / projectsList[j].price * projectsList[j].quantity;
                         inputIndex++;
                         break;
                     } else {
                         templateCompletedInput[inputCompletedIndex] = projectsList[j];
+                        templateCompletedInput[inputCompletedIndex]['fund_progress'] = (projectsList[j]['amount'] * 100) / projectsList[j]['target_fund'];
                         templateCompletedInput[inputCompletedIndex]["contributed_amount"] = data[i].spent;
                         templateCompletedInput[inputCompletedIndex]["crop_quantity"] = data[i].spent / projectsList[j].price * projectsList[j].quantity;
                         inputCompletedIndex++;
