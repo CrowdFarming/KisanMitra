@@ -1,5 +1,6 @@
 var currpage = ''
 var projectsList = [];
+var pageName = null;
 
 $(document).ready(function() {
     $(".navbar-nav li a").click(function(event) {
@@ -16,15 +17,74 @@ function showPage(pagename, arg) {
         setupFarmer(arg);
     } else if ('payment' == pagename) {
         setupPayment(arg);
-    }
-    if (pagename == 'farmers') {
+    } else if (pagename == 'farmers') {
         setupFarmers();
+    } else if ('map' == pagename) {
+        loadMap();
     }
+
     if (pagename != '') {
         $('div[id|="page"]').hide();
         $('#page-' + pagename).show();
         //pageBackHistory.push(currpage);
         currpage = pagename;
+    }
+}
+
+/* Load map */
+var markers = [];
+var infoWindows = [];
+var contentString = [];
+var map = null;
+var dontSetBounds = true;
+
+function loadMap() {
+    var mapOptions = {
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    if (null == map) {
+        map = new google.maps.Map(document.getElementById("div-map"), mapOptions);
+        dontSetBounds = false;
+    }
+
+    var bounds = new google.maps.LatLngBounds();
+
+    if (0 == projectsList.length) {
+        getProjects();
+        pageName = 'map';
+        //TODO: Show a loading page here
+        return;
+    }
+
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    markers.length = 0;
+    infoWindows.length = 0;
+    contentString.length = 0;
+    for (var i = 0; i < projectsList.length; i++) {
+        //contentString[i] = {};
+        var latLong = new google.maps.LatLng(projectsList[i].latitude, projectsList[i].longitude);
+        bounds.extend(latLong);
+
+        contentString[i] = '<p style="font-weight:bold">' + projectsList[i].crop + "</p><br />" + '<a href="#" onclick="showPage(\'payment\',' + i + ')">Fund</a>';
+        infoWindows[i] = new google.maps.InfoWindow({
+            content: contentString[i]
+        });
+
+        markers[i] = new google.maps.Marker({
+            position: latLong,
+            map: map,
+        });
+        markers[i].addListener('click', function() {
+            infoWindows[this.index].open(map, markers[this.index]);
+        }.bind({ "index": i }));
+    }
+
+    if (!dontSetBounds) {
+        map.fitBounds(bounds);
+        dontSetBounds = true;
     }
 }
 
@@ -102,6 +162,26 @@ function showMessage(message, bgcolor) {
 function setupProjects() {
     var source = $("#projectcard-template").html();
     var template = Handlebars.compile(source);
+    var proj_len, i;
+    $("#list-project").empty();
+
+
+    if (0 == projectsList.length) {
+        getProjects();
+        pageName = 'projects';
+        //TODO: Show loading page here
+        return;
+    }
+
+    var data = {};
+    data.data = projectsList;
+
+    for (proj_len = data.data.length, i = 0; i < proj_len; ++i) {
+        data.data[i]['fund_progress'] = (data.data[i]['amount'] * 100) / data.data[i]['target_fund'];
+        data.data[i]['position_index'] = i;
+        $("#list-project").append(template(data.data[i]));
+    }
+    /*
     var req_data = {};
     $.get("projects", function(data, status) {
         //TODO: Remove this log
@@ -123,6 +203,26 @@ function setupProjects() {
             data.data[i]['position_index'] = i;
             $("#list-project").append(template(data.data[i]));
         }
+    });
+    */
+}
+
+function getProjects() {
+    var req_data = {};
+    $.get("projects", function(data, status) {
+        //TODO: Remove this log
+        console.log(data);
+        if (typeof data == 'string') {
+            data = JSON.parse(data);
+        }
+        // TODO: Handle errors gracefully
+        if (!data.success) {
+            console.log(data.message);
+            return;
+        }
+
+        projectsList = data.data;
+        showPage(pageName);
     });
 }
 
