@@ -42,6 +42,13 @@ var map = null;
 var dontSetBounds = true;
 
 function loadMap() {
+    if (0 == projectsList.length) {
+        getProjects();
+        pageName = 'map';
+        //TODO: Show a loading page here
+        return;
+    }
+
     var mapOptions = {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -52,13 +59,6 @@ function loadMap() {
     }
 
     var bounds = new google.maps.LatLngBounds();
-
-    if (0 == projectsList.length) {
-        getProjects();
-        pageName = 'map';
-        //TODO: Show a loading page here
-        return;
-    }
 
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
