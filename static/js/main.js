@@ -178,12 +178,24 @@ $("#login_form").submit(function(event) {
 
 function logout() {
     event.preventDefault();
-    document.cookie = "cke=;";
-    setTimeout(function() {
-        location.reload();
-        window.location.href = window.location.href;
-        location.href = location.href;
-    }, 400);
+    $.get('logout',function(data){
+        if (typeof data == 'string') {
+            data = JSON.parse(data);
+        }
+        console.log(data)
+        if (data.success) {
+            document.cookie = "cke=;";
+            setTimeout(function() {
+                location.reload();
+                console.log(window.location.href);
+                window.location.href = window.location.href;
+                location.href = location.href;
+            }, 400);
+        } else {
+            showMessage(data.message, 'darkred');
+        }
+    });
+
 }
 
 /* Show snackbar */

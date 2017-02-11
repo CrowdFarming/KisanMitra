@@ -107,6 +107,18 @@ function do_payment(req, res) {
     return;
 }
 
+function parseCookies (request) {
+    var list = {},
+        rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+}
+
 function test_page(req, res) {
     res.send("Test success.");
 }
@@ -169,6 +181,7 @@ function user_login(req, res) {
             }
 
             var response_data = {};
+
             response_data['cookie'] = token;
             response_data['name'] = result[0].name;
             response_data['email'] = result[0].email;
@@ -176,7 +189,6 @@ function user_login(req, res) {
             response_data['success'] = true;
             response_data['message'] = 'Logged in Successfully';
             log("login success");
-
             res.send(response_data);
             return;
         });
@@ -186,12 +198,20 @@ function user_login(req, res) {
 function user_logout(req, res) {
     var cookie = req.headers.cookie;
 
-    log("logout cookie = " + cookie);
-
-    remove_cookie(cookie);
-
-    //res.redirect("http://crowdfarming-bgames.rhcloud.com");
-    res.redirect("http://139.59.23.144/");
+    
+    cookie = parseCookies(req)
+    var delete_query = "DELETE FROM `cookies` WHERE `token` = '"+cookie['cke']+"'";
+    connection.query(delete_query, function(err, result) {
+        console.log("delete query")
+        if (err) {
+            console.log("Logout error");
+            res.send( {success:false,message:"Logout failure"});
+            return;
+        }
+        console.log("Logout success");
+        res.send( {success:true,message:"Logout success"});
+        return;
+    });
 }
 
 function get_projects(req, res) {
