@@ -4,6 +4,21 @@ var currentIndex = 0;
 var pageName = null;
 
 $(document).ready(function() {
+    $.get('whoami', function(data) {
+        if (typeof data == 'string') {
+            data = JSON.parse(data);
+        }
+        console.log(data)
+        if (data.success) {
+            $("#login_form").hide();
+            $("#user-name").html(data.name + ' <span class="caret"></span>');
+            $("#user-info").show();
+        } else {
+            $("#login_form").show();
+            $("#user-info").hide();
+        }
+    });
+
     $(".navbar-nav li a").click(function(event) {
         $(".navbar-collapse").collapse('hide');
     });
@@ -171,7 +186,6 @@ $("#login_form").submit(function(event) {
         } else {
             showMessage(data.message, 'darkred');
             document.cookie = "cke=;";
-            $.removeCookie('cke', { path: '/' });
         }
     });
 });

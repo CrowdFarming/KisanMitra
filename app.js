@@ -45,6 +45,7 @@ app.use(bodyParser.urlencoded({
 
 app.get("/test", test_page);
 app.post("/login", user_login);
+app.get("/whoami", get_current_user);
 app.get("/logout", user_logout);
 app.get("/projects", get_projects);
 app.get("/project", get_individual_project);
@@ -123,6 +124,40 @@ function test_page(req, res) {
     res.send("Test success.");
 }
 
+function get_current_user(req, res) {
+   
+    var cookie = parseCookies(req)
+    var response_data = {}
+    var get_query = "SELECT * FROM `cookies` WHERE `token` = '"+cookie['cke']+"'";
+    console.log(get_query)
+    connection.query(get_query, function(err, result) {
+        console.log("get user query")
+        if (err || 0 == result.length ||  result.length > 1)  {
+            console.log("fa1")
+            res.send( {success:false,message:"User not found"});
+            return;
+        } else {
+            var get_user_qry = "SELECT * FROM `user_details` where `uid`="+result[0].user_id;
+            connection.query(get_user_qry, function(err, result) { 
+                if (err || 0 == result.length ||  result.length > 1)  {
+                    console.log("fa2")
+                    res.send( {success:false,message:"User not found"});
+                    return;
+                } else {
+                    response_data['name'] = result[0].name;
+                    response_data['email'] = result[0].email;
+                    response_data['phone'] = result[0].phone;
+                    response_data['success'] = true;
+                    response_data['message'] = 'User found in Successfully';
+                    log("user found");
+                    res.send(response_data);
+                    return;
+                }
+            });
+        }
+    });
+}
+
 function user_login(req, res) {
     var username = req.body.userid;
     var password = req.body.pass;
@@ -196,10 +231,8 @@ function user_login(req, res) {
 }
 
 function user_logout(req, res) {
-    var cookie = req.headers.cookie;
-
-    
-    cookie = parseCookies(req)
+   
+    var cookie = parseCookies(req)
     var delete_query = "DELETE FROM `cookies` WHERE `token` = '"+cookie['cke']+"'";
     connection.query(delete_query, function(err, result) {
         console.log("delete query")
