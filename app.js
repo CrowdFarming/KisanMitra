@@ -190,7 +190,8 @@ function user_logout(req, res) {
 
     remove_cookie(cookie);
 
-    res.redirect("http://crowdfarming-bgames.rhcloud.com");
+    //res.redirect("http://crowdfarming-bgames.rhcloud.com");
+    res.redirect("http://139.59.23.144/");
 }
 
 function get_projects(req, res) {
