@@ -51,7 +51,7 @@
                     <li><a href="#" onclick="showPage('projects')">Projects</a></li>
                     <li><a href="#" onclick="showPage('farmers')">Farmers</a></li>
                     <li><a href="#" onclick="showPage('about')">About</a></li>
-			
+		    <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right" role="form" id="login_form" style="display: none">
@@ -168,6 +168,15 @@
         </div>
     </div>
 
+	<!-- User dashboard -->
+	<!-- FARMER PAGE -->
+    <div id="page-dashboard" style="display:none">
+        <div class="container">
+            <div class="row" id="list-dashboard">
+
+            </div>
+        </div>
+    </div>
     <!-- Payment PAGE -->
     <div id="page-payment" style="display: none;">
         <div class="container">
@@ -257,6 +266,92 @@
                             <div class="main">
                                 <h4 class="text-center">Need fund for</h4>
                                 <p class="text-center">{{need_for_fund}} <br/>Total : Rs.{{target_fund}}
+                                </p>
+                                <div class="progress" style="max-height: 10px">
+                                    {{#compare fund_progress 34 operator="<"}}
+                                    <div class="progress-bar progress-bar-danger " role="progressbar " aria-valuenow={{amount}} aria-valuemin="0 " aria-valuemax="{{target_fund}}" style="width:{{fund_progress}}%"></div>
+                                    {{else}}
+                                        {{#compare fund_progress 67 operator=">"}}
+                                        <div class="progress-bar progress-bar-success " role="progressbar " aria-valuenow={{amount}} aria-valuemin="0 " aria-valuemax="{{target_fund}}" style="width:{{fund_progress}}%"></div>
+                                        {{else}}
+                                        <div class="progress-bar " role="progressbar " aria-valuenow={{amount}} aria-valuemin="0 " aria-valuemax="{{target_fund}}" style="width:{{fund_progress}}%"></div>
+                                        {{/compare}}
+                                    {{/compare}}
+
+                                </div>
+
+                                <div class="stats-container">
+                                    <div class="stats">
+                                        <h4>{{total_investors}}</h4>
+                                        <p>
+                                            Investors
+                                        </p>
+                                    </div>
+                                    <div class="stats">
+                                        <h4>{{amount}}</h4>
+                                        <p>
+                                            Raised
+                                        </p>
+                                    </div>
+                                    <div class="stats">
+                                        <h4>{{fund_to_start}}</h4>
+                                        <p>
+                                            Phase1
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer text-center fund_button">
+                            <a href="#" class="btn" style="font-size: 1.5em" onclick="showPage('payment',{{position_index}})">Fund  <i class="fa fa-money"></i></a>
+							<input class="hidden" value={{position_index}} />
+                        </div>
+                    </div>
+                    <!-- end back panel -->
+                </div>
+            </div>
+        </div>
+        <!-- end card -->
+    </script>
+	
+	<script id="dashboard-card-template" type="text/x-handlebars-template">
+        <div class="col-md-3">
+            <div class="card-container">
+                <div class="card">
+                    <div class="front">
+                        <div class="cover">
+                            <img src="img/products/{{type}}/{{crop}}_bg.jpg" />
+                        </div>
+                        <div class="user">
+                            <img class="img-circle" src="img/products/{{type}}/{{crop}}.jpg" />
+                        </div>
+                        <div class="content">
+                            <div class="main">
+                                <h3 class="name">{{crop}}</h3>
+                                <p class="profession">State: {{current_stage}}</p>
+                                <p class="text-center">
+                                    {{info}}
+                                </p>
+                            </div>
+                            <div class="footer">
+                                <div class="rating">
+                                    <a href="#" class="btn" style="font-size: 2em" onclick="showPage('payment',{{position_index}})">Fund  <i class="fa fa-money"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end front panel -->
+                    <div class="back" style="background-color: #e4e4e4">
+                        <div class="header">
+                            <h5 class="motto" style="text-transform: capitalize;">Farmer : Mr.{{farmer_name}}</h5>
+                        </div>
+                        <div class="farmer">
+                            <img class="img-rounded" src="img/farmer/{{farmer_uid}}.jpg" style="cursor: pointer;" onclick="showPage('farmer',{{farmer_uid}})"/>
+                        </div>
+                        <div class="content">
+                            <div class="main">
+                                <h4 class="text-center">Contribution: {{contributed_amount}}</h4>
+                                <p class="text-center">Contributed for: {{crop}} <br/> {{crop_quantity}} {{unit}}
                                 </p>
                                 <div class="progress" style="max-height: 10px">
                                     {{#compare fund_progress 34 operator="<"}}

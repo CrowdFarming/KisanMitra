@@ -267,6 +267,7 @@ function getProjects() {
 
         projectsList = data.data;
         showPage(pageName);
+        pageName = null;
     });
 }
 
@@ -319,6 +320,85 @@ function setupFarmer(arg) {
         $('#page-farmer').show();
         //pageBackHistory.push(currpage);
         currpage = 'farmer';
+    });
+}
+
+function setupDashboard(arg) {
+    var dashCard = $("#dashboard-card-template").html();
+    var dashTemp = Handlebars.compile(dashCard);
+    var req_data = {};
+
+    if (null == projectsList.length) {
+        getProjects();
+        pageName = "dashboard";
+        return;
+    }
+
+    $.get("journal", function(data, status) {
+        //TODO: Remove this log
+        console.log(data);
+        if (typeof data == 'string') {
+            data = JSON.parse(data);
+        }
+        // TODO: Handle errors gracefully
+        if (!data.success) {
+            console.log(data.message);
+            return;
+        }
+        var proj_len, i;
+        var templateInput = [];
+        var inputIndex = 0;
+        var templateCompletedInput = [];
+        var inputCompletedIndex = 0;
+        for (i = 0; i < data.length; i++) {
+            for (var j = 0; j < projectsList.length; j++) {
+                if (data[i].project_id == projectsList[j].project_uid) {
+                    if ('Completed' != projectsList[j].current_stage) {
+                        templateInput[inputIndex] = projectsList[j];
+                        templateInput[inputIndex]["contributed_amount"] = data[i].spent;
+                        templateInput[inputIndex]["crop_quantity"] = data[i].spent / projectsList[j].price * projectsList[j].quantity;
+                        inputIndex++;
+                        break;
+                    } else {
+                        templateCompletedInput[inputCompletedIndex] = projectsList[j];
+                        templateCompletedInput[inputCompletedIndex]["contributed_amount"] = data[i].spent;
+                        templateCompletedInput[inputCompletedIndex]["crop_quantity"] = data[i].spent / projectsList[j].price * projectsList[j].quantity;
+                        inputCompletedIndex++;
+                    }
+                }
+            }
+        }
+        $("#list-dashboard").empty();
+
+        $("#list-dashboard").append('<div class="row">' + '<div class="col-md-12">' +
+            '<h3>Current Projects</h3></div>');
+        for (i = 0; i < inputIndex; i++) {
+            $("#list-dashboard").append(dashTemp(templateInput[i]));
+            /*
+            if (data.prjlist[i]['current_stage'] != 'Completed') {
+                data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
+                data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
+                console.log(data.prjlist[i])
+                
+            }
+            */
+        }
+        $("#list-dashboard").append('<div class="col-md-12"><h3>Past Projects</h3></div>');
+        for (i = 0; i < inputCompletedIndex; i++) {
+            $("#list-dashboard").append(dashTemp(templateCompletedInput[i]));
+            /*
+            if (data.prjlist[i]['current_stage'] == 'Completed') {
+                data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
+                data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
+                console.log(data.prjlist[i])
+                $("#list-farmer").append(prjtemp(data.prjlist[i]));
+            }
+            */
+        }
+        $('div[id|="page"]').hide();
+        $('#page-dashboard').show();
+        //pageBackHistory.push(currpage);
+        currpage = 'dashboard';
     });
 }
 

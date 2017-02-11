@@ -371,41 +371,74 @@ function get_individual_project(req, res) {
 function get_journal(req, res) {
     var cookie = req.headers.cookie;
     var project_id = req.query.project;
-    var user_id = req.query.user;
+    //var user_id = req.query.user;
 
+    /*
     if (false == verify_cookie_for_user(cookie, user_id)) {
         log("get_journal: user_id is not matching with cookie");
         res.send("user_id is not matching with cookie");
         return;
     }
+    */
 
-    var journal_query = "SELECT * FROM journal WHERE ";
-    var journal_data = [];
-
-    if (("" != user_id) && ("" != project_id)) {
-        journal_query += "project_id = ? AND user_id = ?";
-        journal_data.push(project_id);
-        journal_data.push(user_id);
-    } else if ("" != user_id) {
-        journal_query += "user_id = ?";
-        journal_data.push(user_id);
-    } else if ("" != project_id) {
-        journal_query += "project_id = ?";
-        journal_data.push(project_id);
-    } else {
-        log("get_journal: user_id and project_id both cannot be empty");
-        res.send("user_id and project_id both cannot be empty");
-        return;
-    }
-
-    connection.query(journal_query, journal_data, function(error, journal_result) {
-        if (error) {
-            res.send("query or db error");
+    var select_user = "SELECT * FROM cookies WHERE token = ?";
+    var select_user_data = [];
+    select_user_data.push(cookie);
+    connection.query(select_user, select_user_data, function(user_select_error, user_result) {
+        if (user_select_error) {
+            log("get_journal: user_select query/db error - cookie: " + cookie);
+            res.send("Query/Db error");
+            return;
+        } else if (1 != user_result.length) {
+            log("get_journal: user_select duplicate - cookie: " + cookie);
+            res.send("duplicate entry");
             return;
         }
 
-        res.send(journal_result);
+        var user_id = user_result[0].user_id;
+        var select_journal_query = "SELECT SUM(amount) AS spent , project_id FROM journal WHERE credit = 'no' AND user_id = ? GROUP BY project_id";
+        var select_journal_data = [];
+        select_journal_data.push(user_id);
+        connection.query(select_journal_query, select_journal_data, function(journal_error, journal_result) {
+            if (journal_error) {
+                log("get_journal: journal_select query/db error - cookie: " + cookie);
+                res.send("Query/Db error");
+                return;
+            }
+
+
+        });
     });
+
+    /*
+        var journal_query = "SELECT * FROM journal WHERE ";
+        var journal_data = [];
+
+        if (("" != user_id) && ("" != project_id)) {
+            journal_query += "project_id = ? AND user_id = ?";
+            journal_data.push(project_id);
+            journal_data.push(user_id);
+        } else if ("" != user_id) {
+            journal_query += "user_id = ?";
+            journal_data.push(user_id);
+        } else if ("" != project_id) {
+            journal_query += "project_id = ?";
+            journal_data.push(project_id);
+        } else {
+            log("get_journal: user_id and project_id both cannot be empty");
+            res.send("user_id and project_id both cannot be empty");
+            return;
+        }
+
+        connection.query(journal_query, journal_data, function(error, journal_result) {
+            if (error) {
+                res.send("query or db error");
+                return;
+            }
+
+            res.send(journal_result);
+        });
+        */
 }
 
 
