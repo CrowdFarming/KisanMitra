@@ -1,4 +1,4 @@
-# alpha
+# KisanMitra
 Crowd funding for Farmers practising Natural farming methods
 
 ## Objective
