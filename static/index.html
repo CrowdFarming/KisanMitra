@@ -44,7 +44,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#" onclick="showPage('home')">Crowd Farm</a>
+                    <a class="navbar-brand" href="#" onclick="showPage('home')">Kisan Mitra</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -68,7 +68,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="user-name">PRDinesh <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Logout</a></li>
+                            <li><a href="#" onclick="logout();">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -81,7 +81,7 @@
     <div id="page-home">
         <div class="jumbotron">
             <div class="container">
-				<h1>Crowd Farming</h1>
+                <h1>Kisan Mitra</h1>
                 <h3>Save our farmers and culture</h3>
 				<div class="col-md-6">
               
@@ -163,26 +163,29 @@
         </div>
     </div>
 
-
-	<div id="page-payment" style="display: none;">
+    <!-- Payment PAGE -->
+    <div id="page-payment" style="display: none;">
         <div class="container">
-            <div class="row";>
-                <div class="col-md-6 col-md-offset-3" id="div-do_payment">
-					<input id="input-payment_index" class="hidden" />
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="times" aria-describedby="payment_min_amount" id="payment_x">
-						<span class="input-group-addon" id="payment_min_amount">x 500</span>
-					</div>
-					<button type="button" class="btn btn-success pull-right" id="pay_button" style="margin-top: 10px;" onclick="contribute()">Contribute</button>
+            <div class="row" ;>
+                <div id="list-payment"></div>
+                <div class="col-md-6" id="div-do_payment">
+                    <form class="form-inline">
+                    <div class="form-group">
+                        <div class="input-group btn-group" id="payment_detail">
+                        
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="contribute()">Contribute</button>
+                    </form>
                 </div>
-				<div class="col-md-6 col-md-offset-3" id="div-payment_done">
-					<div class="alert alert-success" role="alert">Contribution successful! Thanks for supporting.</div>
-					<button type="button" class="btn btn-success pull-right" id="home_button" style="margin-top: 10px;" onclick="showPage('home')">Home Page</button>
-				</div>
-			</div>
-		</div>
-	</div>
-    
+                <div class="col-md-6 col-md-offset-3" id="div-payment_done">
+                    <div class="alert alert-success" role="alert">Contribution success! Thanks for supporting.</div>
+                    <button type="button" class="btn btn-success pull-right" id="home_button" style="margin-top: 10px;" onclick="showPage('home')">Home Page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Payment PAGE -->    
 	<div id="page-map" style="display: none;">
 		<div class="container">
 			<div class="row">
@@ -195,7 +198,14 @@
 	<hr>
     <div id="snackbar"></div>
     <footer>
-        <p>&copy; Company 2017</p>
+        <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+            <div class="container text-center" style="color:lightgrey">
+
+                <p>Thanks to Digital Ocean, Venturesity and 91Springboard.
+                </p>
+                <p> &copy; <b>247 OpenSpace</b> 2017</p>
+            </div>
+        </nav>
     </footer>
 
     <!-- Templates -->
@@ -323,6 +333,13 @@
             </div>
         </div>
         </div>
+    </script>
+    <script id="price-template" type="text/x-handlebars-template">
+        <button type="button" class="btn btn-default" onclick="calcTotal('1')" on-hold="calcTotal('1')"><i class="fa fa-plus aria-hidden='true'"></i></button>
+        <input type="number" min="1" max="100" class="form-control text-right" id="buy_units" style="max-width: 70px" placeholder="Units" value="1" onchange="calcTotal('0')">
+        <button type="button" class="btn btn-default" onclick="calcTotal('-1')" on-hold="calcTotal('-1')"><i class="fa fa-minus aria-hidden='true'"></i></button>
+        <div class="input-group-addon"> x {{quantity}} {{unit}} x <i class="fa fa-inr aria-hidden='true'"></i> {{price}}/{{unit}} = </div>
+        <div class="input-group-addon" id="total_value"><i class="fa fa-inr aria-hidden='true'"></i> {{price}}</div>
     </script>
     <!-- /container -->
     <!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

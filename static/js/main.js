@@ -1,5 +1,6 @@
 var currpage = ''
 var projectsList = [];
+var currentIndex = 0;
 var pageName = null;
 
 $(document).ready(function() {
@@ -13,17 +14,20 @@ function showPage(pagename, arg) {
 
     if (pagename == 'projects') {
         setupProjects();
+	$('div[id|="page"]').hide();
+        $('#page-' + pagename).show();
+        //pageBackHistory.push(currpage);
+        currpage = pagename;
     } else if (pagename == 'farmer') {
         setupFarmer(arg);
-    } else if ('payment' == pagename) {
+    } else if (pagename == 'payment') {
         setupPayment(arg);
     } else if (pagename == 'farmers') {
         setupFarmers();
-    } else if ('map' == pagename) {
+    } else if (pagename == 'map') {
         loadMap();
     }
-
-    if (pagename != '') {
+    else if (pagename != '') {
         $('div[id|="page"]').hide();
         $('#page-' + pagename).show();
         //pageBackHistory.push(currpage);
@@ -86,22 +90,53 @@ function loadMap() {
         map.fitBounds(bounds);
         dontSetBounds = true;
     }
+
+    $('div[id|="page"]').hide();
+    $('#page-map').show();
+    //pageBackHistory.push(currpage);
+    currpage = 'map';
 }
 
 /* Payment processing */
 function setupPayment(index) {
     var min_amount = projectsList[index].price;
+    var source = $("#projectcard-template").html();
+    var template = Handlebars.compile(source);
+    var price_source = $("#price-template").html();
+    var price_template = Handlebars.compile(price_source);
+    currentIndex = index;
     $("#input-payment_index").val(index);
     $("#div-payment_done").hide();
     $("#div-do_payment").show();
     $("#payment_min_amount").html(" x " + min_amount);
+    $("#list-payment").empty();
+    $("#list-payment").prepend(template(projectsList[index]));
+
+    $("#payment_detail").html(price_template(projectsList[index]));
+    $('div[id|="page"]').hide();
+    $('#page-payment').show();
+    //pageBackHistory.push(currpage);
+    currpage = 'payment';
 }
 
+function calcTotal(change) {
+    var chng = parseInt(change);
+    var totalvalue = 0;
+    currValue = parseInt($("#buy_units").val());
+    currValue = currValue + chng;
+    if (currValue > 100) {
+        currValue = 100;
+    } else if (currValue <= 0) {
+        currValue = 1;
+    }
+    $("#buy_units").val(currValue);
+    totalvalue  = currValue * parseInt(projectsList[currentIndex]['quantity']) * parseInt(projectsList[currentIndex]['price']);
+    $("#total_value").html("<i class=\"fa fa-inr aria-hidden='true'\"></i>"+totalvalue);
+}
 /* Payment confirmation */
 function contribute() {
-    var amount = $("#payment_x").val();
-    var multiple = $("#payment_min_amount").text().split(" ");
-    var amount = amount * multiple[2];
+    var amount = parseInt($("#total_value").text());
+
     var ret = confirm("Confirm payment of Rs. " + amount);
     if (true == ret) {
         doPayment(amount);
@@ -112,9 +147,7 @@ function contribute() {
 
 function doPayment(amount) {
     var post_data = { "amount": amount };
-    var index = $("#input-payment_index").val();
-
-    post_data["project_id"] = projectsList[index].project_uid;
+    post_data["project_id"] = projectsList[currentIndex].project_uid;
     $.post('contribute', post_data, function(data) {
         $("#div-do_payment").hide();
         $("#div-payment_done").show();
@@ -139,10 +172,20 @@ $("#login_form").submit(function(event) {
         } else {
             showMessage(data.message, 'darkred');
             document.cookie = "cke=;";
+            $.removeCookie('cke', { path: '/' });
         }
     });
 });
 
+function logout() {
+    event.preventDefault();
+    document.cookie = "cke=;";
+    setTimeout(function() {
+        location.reload();
+        window.location.href=window.location.href;
+        location.href=location.href;
+    }, 400);
+}
 /* Show snackbar */
 function showMessage(message, bgcolor) {
     // Get the snackbar DIV
@@ -203,6 +246,10 @@ function setupProjects() {
             data.data[i]['position_index'] = i;
             $("#list-project").append(template(data.data[i]));
         }
+        $('div[id|="page"]').hide();
+        $('#page-projects').show();
+        //pageBackHistory.push(currpage);
+        currpage = 'projects';
     });
     */
 }
@@ -245,7 +292,7 @@ function setupFarmer(arg) {
         }
         var proj_len, i;
         $("#list-farmer").empty();
-        data.data[0]['bgnumber'] = Math.floor(10 * Math.random()) + 1;
+        data.data[0]['bgnumber'] = parseInt(data.data[0]['farmer_uid'], 10)%10 + 1;
 
         $("#list-farmer").append('<div class="row">' + farmertemp(data.data[0]) +
             '<div class="col-md-9">' + '<h2>About me</h2><p>' +
@@ -270,6 +317,10 @@ function setupFarmer(arg) {
                 $("#list-farmer").append(prjtemp(data.prjlist[i]));
             }
         }
+        $('div[id|="page"]').hide();
+        $('#page-farmer').show();
+        //pageBackHistory.push(currpage);
+        currpage = 'farmer';
 
     });
 }
@@ -293,8 +344,12 @@ function setupFarmers() {
         $("#list-farmers").empty();
 
         for (proj_len = data.data.length, i = 0; i < proj_len; ++i) {
-            data.data[i]['bgnumber'] = Math.floor(10 * Math.random()) + 1;
+            data.data[i]['bgnumber'] = parseInt(data.data[i]['farmer_uid'], 10)%10 + 1;
             $("#list-farmers").append(farmertemp(data.data[i]));
         }
+        $('div[id|="page"]').hide();
+        $('#page-farmers').show();
+        //pageBackHistory.push(currpage);
+        currpage = 'farmers';
     });
 }
