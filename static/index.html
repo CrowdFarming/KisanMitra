@@ -86,7 +86,8 @@
 				<div class="col-md-6">
               
                 <div class="embed-responsive embed-responsive-16by9">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/coMVQkSvzF8" frameborder="0" allowfullscreen></iframe>
+                    <!--iframe width="560" height="315" src="https://www.youtube.com/embed/coMVQkSvzF8" frameborder="0" allowfullscreen></iframe-->
+					<iframe width="1500" height="844" src="https://www.youtube.com/embed/coMVQkSvzF8?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
                 </div>
                 
 				</div>
@@ -350,8 +351,8 @@
                         </div>
                         <div class="content">
                             <div class="main">
-                                <h4 class="text-center">Contribution: {{contributed_amount}}</h4>
-                                <p class="text-center">Contributed for: {{crop}} <br/> {{crop_quantity}} {{unit}}
+                                <h4 class="text-center">Contribution:<br/>Rs. {{contributed_amount}}</h4>
+                                <p class="text-center">Contributed for:<br/>{{crop}} <br/> {{crop_quantity}} {{unit}}
                                 </p>
                                 <div class="progress" style="max-height: 10px">
                                     {{#compare fund_progress 34 operator="<"}}

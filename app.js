@@ -108,11 +108,11 @@ function do_payment(req, res) {
     return;
 }
 
-function parseCookies (request) {
+function parseCookies(request) {
     var list = {},
         rc = request.headers.cookie;
 
-    rc && rc.split(';').forEach(function( cookie ) {
+    rc && rc.split(';').forEach(function(cookie) {
         var parts = cookie.split('=');
         list[parts.shift().trim()] = decodeURI(parts.join('='));
     });
@@ -125,23 +125,23 @@ function test_page(req, res) {
 }
 
 function get_current_user(req, res) {
-   
+
     var cookie = parseCookies(req)
     var response_data = {}
-    var get_query = "SELECT * FROM `cookies` WHERE `token` = '"+cookie['cke']+"'";
+    var get_query = "SELECT * FROM `cookies` WHERE `token` = '" + cookie['cke'] + "'";
     console.log(get_query)
     connection.query(get_query, function(err, result) {
         console.log("get user query")
-        if (err || 0 == result.length ||  result.length > 1)  {
+        if (err || 0 == result.length || result.length > 1) {
             console.log("fa1")
-            res.send( {success:false,message:"User not found"});
+            res.send({ success: false, message: "User not found" });
             return;
         } else {
-            var get_user_qry = "SELECT * FROM `user_details` where `uid`="+result[0].user_id;
-            connection.query(get_user_qry, function(err, result) { 
-                if (err || 0 == result.length ||  result.length > 1)  {
+            var get_user_qry = "SELECT * FROM `user_details` where `uid`=" + result[0].user_id;
+            connection.query(get_user_qry, function(err, result) {
+                if (err || 0 == result.length || result.length > 1) {
                     console.log("fa2")
-                    res.send( {success:false,message:"User not found"});
+                    res.send({ success: false, message: "User not found" });
                     return;
                 } else {
                     response_data['name'] = result[0].name;
@@ -231,18 +231,18 @@ function user_login(req, res) {
 }
 
 function user_logout(req, res) {
-   
     var cookie = parseCookies(req)
-    var delete_query = "DELETE FROM `cookies` WHERE `token` = '"+cookie['cke']+"'";
+    var delete_query = "DELETE FROM `cookies` WHERE `token` = '" + cookie['cke'] + "'";
+
     connection.query(delete_query, function(err, result) {
         console.log("delete query")
         if (err) {
             console.log("Logout error");
-            res.send( {success:false,message:"Logout failure"});
+            res.send({ success: false, message: "Logout failure" });
             return;
         }
         console.log("Logout success");
-        res.send( {success:true,message:"Logout success"});
+        res.send({ success: true, message: "Logout success" });
         return;
     });
 }
@@ -370,7 +370,9 @@ function get_individual_project(req, res) {
 
 function get_journal(req, res) {
     var cookie = req.headers.cookie;
-    var project_id = req.query.project;
+    //var project_id = req.query.project;
+    cookie = cookie.split("cke=")[1];
+    log("get_journal cookie: " + cookie);
     //var user_id = req.query.user;
 
     /*
@@ -406,7 +408,10 @@ function get_journal(req, res) {
                 return;
             }
 
-
+            var responseObj = {};
+            responseObj.success = true;
+            responseObj.data = journal_result;
+            res.send(responseObj);
         });
     });
 

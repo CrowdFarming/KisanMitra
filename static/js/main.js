@@ -41,6 +41,8 @@ function showPage(pagename, arg) {
         setupFarmers();
     } else if (pagename == 'map') {
         loadMap();
+    } else if ('dashboard' == pagename) {
+        setupDashboard();
     } else if (pagename != '') {
         $('div[id|="page"]').hide();
         $('#page-' + pagename).show();
@@ -192,7 +194,7 @@ $("#login_form").submit(function(event) {
 
 function logout() {
     event.preventDefault();
-    $.get('logout',function(data){
+    $.get('logout', function(data) {
         if (typeof data == 'string') {
             data = JSON.parse(data);
         }
@@ -299,7 +301,7 @@ function setupFarmer(arg) {
         for (proj_len = data.prjlist.length, i = 0; i < proj_len; ++i) {
 
             if (data.prjlist[i]['current_stage'] != 'Completed') {
-                data.prjlist[i]['fund_progress'] = ( data.prjlist[i]['amount'] * 100) /  data.prjlist[i]['target_fund'];
+                data.prjlist[i]['fund_progress'] = (data.prjlist[i]['amount'] * 100) / data.prjlist[i]['target_fund'];
                 data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
                 data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
                 console.log(data.prjlist[i])
@@ -309,7 +311,7 @@ function setupFarmer(arg) {
         $("#list-farmer").append('<div class="col-md-12"><h3>Past Projects</h3></div>');
         for (proj_len = data.prjlist.length, i = 0; i < proj_len; ++i) {
             if (data.prjlist[i]['current_stage'] == 'Completed') {
-                data.prjlist[i]['fund_progress'] = ( data.prjlist[i]['amount'] * 100) /  data.prjlist[i]['target_fund'];
+                data.prjlist[i]['fund_progress'] = (data.prjlist[i]['amount'] * 100) / data.prjlist[i]['target_fund'];
                 data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
                 data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
                 console.log(data.prjlist[i])
@@ -328,9 +330,9 @@ function setupDashboard(arg) {
     var dashTemp = Handlebars.compile(dashCard);
     var req_data = {};
 
-    if (null == projectsList.length) {
-        getProjects();
+    if (0 == projectsList.length) {
         pageName = "dashboard";
+        getProjects();
         return;
     }
 
@@ -345,6 +347,7 @@ function setupDashboard(arg) {
             console.log(data.message);
             return;
         }
+        data = data.data;
         var proj_len, i;
         var templateInput = [];
         var inputIndex = 0;
