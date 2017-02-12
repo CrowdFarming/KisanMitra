@@ -15,9 +15,9 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (!err) {
-        console.log("Database is connected ... \n\n");
+        log("Database is connected ... \n\n");
     } else {
-        console.log("Error in connecting database ... \n\n");
+        log("Error in connecting database ... \n\n");
         process.exit(-1);
     }
 });
@@ -55,7 +55,7 @@ app.get("/farmers", get_farmers);
 app.post("/contribute", do_payment);
 
 app.listen(env.NODE_PORT || 3000, env.NODE_IP || 'localhost', function() {
-    console.log("new client");
+    log("new client");
 });
 
 /*
@@ -129,18 +129,18 @@ function get_current_user(req, res) {
     var cookie = parseCookies(req)
     var response_data = {}
     var get_query = "SELECT * FROM `cookies` WHERE `token` = '" + cookie['cke'] + "'";
-    console.log(get_query)
+    log(get_query)
     connection.query(get_query, function(err, result) {
-        console.log("get user query")
+        log("get user query")
         if (err || 0 == result.length || result.length > 1) {
-            console.log("fa1")
+            log("fa1")
             res.send({ success: false, message: "User not found" });
             return;
         } else {
             var get_user_qry = "SELECT * FROM `user_details` where `uid`=" + result[0].user_id;
             connection.query(get_user_qry, function(err, result) {
                 if (err || 0 == result.length || result.length > 1) {
-                    console.log("fa2")
+                    log("fa2")
                     res.send({ success: false, message: "User not found" });
                     return;
                 } else {
@@ -164,7 +164,7 @@ function user_login(req, res) {
     var loginQuery;
 
 
-    console.log("username = " + username + " password = " + password);
+    log("username = " + username + " password = " + password);
 
     if (true == validateEmail(username)) {
         loginQuery = "SELECT * FROM user_details WHERE email = ? AND password = ?";
@@ -178,21 +178,21 @@ function user_login(req, res) {
 
     connection.query(loginQuery, loginData, function(error, result) {
         if (error) {
-            console.log("db or query error" + error);
+            log("db or query error" + error);
             var response_data = {};
             response_data['success'] = false;
             response_data['message'] = 'DB error';
             res.send(response_data);
             return;
         } else if (0 == result.length) {
-            console.log("invalid user");
+            log("invalid user");
             var response_data = {};
             response_data['success'] = false;
             response_data['message'] = 'Password or Userid invalid';
             res.send(response_data);
             return;
         } else if (1 != result.length) {
-            console.log("duplicate entry")
+            log("duplicate entry")
             var response_data = {};
             response_data['success'] = false;
             response_data['message'] = 'Invalid userid';
@@ -235,13 +235,13 @@ function user_logout(req, res) {
     var delete_query = "DELETE FROM `cookies` WHERE `token` = '" + cookie['cke'] + "'";
 
     connection.query(delete_query, function(err, result) {
-        console.log("delete query")
+        log("delete query")
         if (err) {
-            console.log("Logout error");
+            log("Logout error");
             res.send({ success: false, message: "Logout failure" });
             return;
         }
-        console.log("Logout success");
+        log("Logout success");
         res.send({ success: true, message: "Logout success" });
         return;
     });
@@ -268,7 +268,7 @@ function get_projects(req, res) {
 function get_farmer(req, res) {
     var response_data = {};
     var select_query = "SELECT * FROM farmer_details WHERE farmer_uid = " + req.params.uid;
-    console.log(select_query);
+    log(select_query);
     connection.query(select_query, function(err, select_result) {
         if (err) {
 
@@ -281,7 +281,7 @@ function get_farmer(req, res) {
         response_data['message'] = 'Query Success';
         response_data['data'] = select_result;
         select_query = "SELECT * FROM project_details WHERE farmer_id = " + req.params.uid;
-        console.log(select_query);
+        log(select_query);
         connection.query(select_query, function(err, select_result) {
             if (!err) {
                 response_data['prjlist'] = select_result;
