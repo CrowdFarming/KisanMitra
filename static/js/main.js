@@ -253,6 +253,12 @@ function setupProjects() {
     for (proj_len = data.data.length, i = 0; i < proj_len; ++i) {
         data.data[i]['fund_progress'] = (data.data[i]['amount'] * 100) / data.data[i]['target_fund'];
         data.data[i]['position_index'] = i;
+        if (data.data[i]['current_stage'] == 'Completed') {
+            data.data[i]['not_completed'] = false;
+        } else {
+            data.data[i]['not_completed'] = true;
+        }
+
         $("#list-project").append(template(data.data[i]));
     }
 }
@@ -270,7 +276,14 @@ function getProjects() {
             console.log(data.message);
             return;
         }
-
+        var  len = data.data.length;
+        for (var i = 0; i < len; i++){
+            if (data.data[i]['current_stage'] == 'Completed') {
+                data.data[i]['not_completed'] = false;
+            } else {
+                data.data[i]['not_completed'] = true;
+            }
+        }
         projectsList = data.data;
         showPage(pageName);
         pageName = null;
@@ -308,6 +321,7 @@ function setupFarmer(arg) {
                 data.prjlist[i]['fund_progress'] = (data.prjlist[i]['amount'] * 100) / data.prjlist[i]['target_fund'];
                 data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
                 data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
+                data.prjlist[i]['not_completed'] = true;
                 console.log(data.prjlist[i])
                 $("#list-farmer").append(prjtemp(data.prjlist[i]));
             }
@@ -318,6 +332,7 @@ function setupFarmer(arg) {
                 data.prjlist[i]['fund_progress'] = (data.prjlist[i]['amount'] * 100) / data.prjlist[i]['target_fund'];
                 data.prjlist[i]['farmer_name'] = data.data[0]['farmer_name'];
                 data.prjlist[i]['farmer_uid'] = data.data[0]['farmer_uid'];
+                data.prjlist[i]['not_completed'] = false;
                 console.log(data.prjlist[i])
                 $("#list-farmer").append(prjtemp(data.prjlist[i]));
             }

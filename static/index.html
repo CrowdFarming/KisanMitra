@@ -250,7 +250,13 @@
                             </div>
                             <div class="footer">
                                 <div class="rating">
+                                    {{#if not_completed}}
                                     <a href="#" class="btn" style="font-size: 2em" onclick="showPage('payment',{{position_index}})">Fund  <i class="fa fa-money"></i></a>
+                                    {{else}}
+                                    <p style="font-size: 2em" >
+                                    Completed
+                                    </p>
+                                    {{/if}}
                                 </div>
                             </div>
                         </div>
@@ -304,8 +310,10 @@
                             </div>
                         </div>
                         <div class="footer text-center fund_button">
-                            <a href="#" class="btn" style="font-size: 1.5em" onclick="showPage('payment',{{position_index}})">Fund  <i class="fa fa-money"></i></a>
+                            {{#if not_completed}}
+                            <a href="#" class="btn {{not_completed}}" style="font-size: 1.5em" onclick="showPage('payment',{{position_index}})">Fund  <i class="fa fa-money"></i></a>
 							<input class="hidden" value={{position_index}} />
+                            {{/if}}
                         </div>
                     </div>
                     <!-- end back panel -->
