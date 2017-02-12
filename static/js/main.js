@@ -84,7 +84,11 @@ function loadMap() {
     infoWindows.length = 0;
     contentString.length = 0;
     for (var i = 0; i < projectsList.length; i++) {
-        //contentString[i] = {};
+        /* Don't show Completed projects in Map */
+        if ("Completed" == projectsList[i].current_stage) {
+            continue;
+        }
+
         var latLong = new google.maps.LatLng(projectsList[i].latitude, projectsList[i].longitude);
         bounds.extend(latLong);
 
